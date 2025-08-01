@@ -4,7 +4,7 @@ go 1.24.4
 
 require (
 	github.com/google/go-jsonnet v0.21.0
-	github.com/marcbran/jpoet v0.12.0
+	github.com/marcbran/jpoet v0.13.0
 	github.com/stretchr/testify v1.10.0
 )
 
@@ -30,4 +30,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/yaml v1.5.0 // indirect
 )
-
