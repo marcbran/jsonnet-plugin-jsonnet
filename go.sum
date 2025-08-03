@@ -26,8 +26,8 @@ github.com/hashicorp/yamux v0.1.1 h1:yrQxtgseBDrq9Y652vSRDvsKCJKOUD+GzTS4Y0Y8pvE
 github.com/hashicorp/yamux v0.1.1/go.mod h1:CtWFDAQgb7dxtzFs4tWbplKIe2jSi3+5vKbgIO0SLnQ=
 github.com/jhump/protoreflect v1.15.1 h1:HUMERORf3I3ZdX05WaQ6MIpd/NJ434hTp5YiKgfCL6c=
 github.com/jhump/protoreflect v1.15.1/go.mod h1:jD/2GMKKE6OqX8qTjhADU1e6DShO+gavG9e0Q693nKo=
-github.com/marcbran/jpoet v0.13.0 h1:0/JRKVM5ESN3CNAer4C3bX8dgQ0UvkeRLWrpHZoyOcY=
-github.com/marcbran/jpoet v0.13.0/go.mod h1:5lyFTPgv6dteOMoRbUQLOyNFD0ftEl697vLxttBfmzQ=
+github.com/marcbran/jpoet v0.14.0 h1:jhK6jEfTT4UR83wMoL9lsMuphpBcADG+TcEcbeeSQCI=
+github.com/marcbran/jpoet v0.14.0/go.mod h1:AbKrQPTzoAsYrwgNR7yRwLzH+0ZAqpcwgAz63HoERSk=
 github.com/mattn/go-colorable v0.1.9/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
 github.com/mattn/go-colorable v0.1.12/go.mod h1:u5H1YNBxpqRaxsYJYSkiCWKzEfiAb1Gb520KVy5xxl4=
 github.com/mattn/go-colorable v0.1.13 h1:fFA4WZxdEF4tXPZVKMLwD8oUnCTTo08duU7wxecdEvA=

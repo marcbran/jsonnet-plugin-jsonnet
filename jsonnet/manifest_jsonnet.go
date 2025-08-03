@@ -1,4 +1,4 @@
-package main
+package jsonnet
 
 import (
 	"fmt"
@@ -6,19 +6,15 @@ import (
 	"github.com/google/go-jsonnet/ast"
 )
 
-func ParseJsonnet() jsonnet.NativeFunction {
+func ManifestJsonnet() jsonnet.NativeFunction {
 	return jsonnet.NativeFunction{
-		Name:   "parseJsonnet",
+		Name:   "manifestJsonnet",
 		Params: ast.Identifiers{"jsonnet"},
 		Func: func(input []any) (any, error) {
 			if len(input) != 1 {
 				return nil, fmt.Errorf("jsonnet must be provided")
 			}
-			md, ok := input[0].(string)
-			if !ok {
-				return nil, fmt.Errorf("jsonnet must be a string")
-			}
-			out, err := Parse(md)
+			out, err := Manifest(input[0])
 			if err != nil {
 				return nil, err
 			}
