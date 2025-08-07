@@ -107,8 +107,24 @@ func TestParseManifest(t *testing.T) {
 			jsonnet: "{}",
 		},
 		{
+			name:    "object/apply",
+			jsonnet: "a { b: 1 }",
+		},
+		{
 			name:    "object/field",
 			jsonnet: "{ a: 1 }",
+		},
+		{
+			name:    "object/field func",
+			jsonnet: "{ a(): 1 }",
+		},
+		{
+			name:    "object/field expr",
+			jsonnet: "{ [a]: 1 }",
+		},
+		{
+			name:    "object/field expr func",
+			jsonnet: "{ [a](): 1 }",
 		},
 		{
 			name:    "object/local",
@@ -161,6 +177,18 @@ func TestParseManifest(t *testing.T) {
 		{
 			name:    "if/if-else",
 			jsonnet: "if 1 > 0 then 1 else 0",
+		},
+		{
+			name:    "assert/no message",
+			jsonnet: "assert true; true",
+		},
+		{
+			name:    "assert/message",
+			jsonnet: "assert 'foo': 'bar'",
+		},
+		{
+			name:    "error/message",
+			jsonnet: "error 'foo'",
 		},
 		{
 			name:    "comment/simple",
