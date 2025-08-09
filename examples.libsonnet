@@ -37,13 +37,28 @@ p.ex({}, {
       ),
     expected: '$',
   }),
-  String: p.ex({
+  String: p.ex([{
+    name: 'simple',
     example:
       j.manifestJsonnet(
         j.String('foobar'),
       ),
     expected: "'foobar'",
-  }),
+  }, {
+    name: 'format',
+    example:
+      j.manifestJsonnet(
+        j.String('foo bar %s', j.String('baz')),
+      ),
+    expected: "'foo bar %s' % 'baz'",
+  }, {
+    name: 'format list',
+    example:
+      j.manifestJsonnet(
+        j.String('foo %s %s', j.Array([j.String('bar'), j.String('baz')])),
+      ),
+    expected: "'foo %s %s' % ['bar', 'baz']",
+  }]),
   Number: p.ex({
     example:
       j.manifestJsonnet(
