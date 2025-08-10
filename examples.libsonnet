@@ -66,13 +66,21 @@ p.ex({}, {
       ),
     expected: '123.456',
   }),
-  Var: p.ex({
+  Var: p.ex([{
+    name: 'simple',
     example:
       j.manifestJsonnet(
         j.Var('a'),
       ),
     expected: 'a',
-  }),
+  }, {
+    name: 'fodder',
+    example:
+      j.manifestJsonnet(
+        j.Local(j.LocalBind('a', j.String('foo')), j.Var('a').fodder(j.Fodder.LineEnd(1))),
+      ),
+    expected: "local a = 'foo';\na",
+  }]),
   Member: p.ex({
     example:
       j.manifestJsonnet(

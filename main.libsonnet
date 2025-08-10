@@ -1,24 +1,30 @@
+local wrapArray(val) = if std.type(val) == 'array' then val else [val];
+
+local NodeBase = {
+  fodder(f):: self { fodder::: wrapArray(f) },
+};
+
 {
-  Null: {
+  Null: NodeBase {
     __kind__: 'LiteralNull',
   },
-  True: {
+  True: NodeBase {
     __kind__: 'LiteralBoolean',
     value: true,
   },
-  False: {
+  False: NodeBase {
     __kind__: 'LiteralBoolean',
     value: false,
   },
-  Self: {
+  Self: NodeBase {
     __kind__: 'Self',
   },
-  Dollar: {
+  Dollar: NodeBase {
     __kind__: 'Dollar',
   },
   String(value, format=null):
     if format == null
-    then {
+    then NodeBase {
       __kind__: 'LiteralString',
       value: value,
     }
@@ -26,78 +32,105 @@
       __kind__: 'LiteralString',
       value: value,
     }, format),
-  Number(value): {
+  Number(value): NodeBase {
     __kind__: 'LiteralNumber',
     originalString: value,
   },
-  Var(id): {
+  Var(id): NodeBase {
     __kind__: 'Var',
     id: id,
   },
 
-  Index(target, index): {
+  Index(target, index): NodeBase {
     __kind__: 'Index',
     target: target,
     index: index,
+    leftBracketFodder(f):: self { leftBracketFodder::: wrapArray(f) },
+    rightBracketFodder(f):: self { rightBracketFodder::: wrapArray(f) },
   },
-  Member(target, id): {
+  Member(target, id): NodeBase {
     __kind__: 'Index',
     target: target,
     id: id,
+    dotLeftFodder(f):: self { leftBracketFodder::: wrapArray(f) },
+    dotRightFodder(f):: self { rightBracketFodder::: wrapArray(f) },
   },
-  Slice(target, begin, end, step): {
+  Slice(target, begin, end, step): NodeBase {
     __kind__: 'Slice',
     target: target,
     beginIndex: begin,
     endIndex: end,
     step: step,
+    leftBracketFodder(f):: self { leftBracketFodder::: wrapArray(f) },
+    endColonFodder(f):: self { endColonFodder::: wrapArray(f) },
+    stepColonFodder(f):: self { stepColonFodder::: wrapArray(f) },
+    rightBracketFodder(f):: self { rightBracketFodder::: wrapArray(f) },
   },
 
-  SuperIndex(index): {
+  SuperIndex(index): NodeBase {
     __kind__: 'SuperIndex',
     index: index,
+    leftBracketFodder(f):: self { dotFodder::: wrapArray(f) },
+    rightBracketFodder(f):: self { idFodder::: wrapArray(f) },
   },
-  SuperMember(id): {
+  SuperMember(id): NodeBase {
     __kind__: 'SuperIndex',
     id: id,
+    dotLeftFodder(f):: self { dotFodder::: wrapArray(f) },
+    dotRightFodder(f):: self { idFodder::: wrapArray(f) },
   },
-  InSuper(index): {
+  InSuper(index): NodeBase {
     __kind__: 'InSuper',
     index: index,
+    inFodder(f):: self { inFodder::: wrapArray(f) },
+    superFodder(f):: self { superFodder::: wrapArray(f) },
   },
 
-  Function(parameters, body): {
+  Function(parameters, body): NodeBase {
     __kind__: 'Function',
     parameters: parameters,
     body: body,
+    parenLeftFodder(f):: self { parenLeftFodder::: wrapArray(f) },
+    parenRightFodder(f):: self { parenRightFodder::: wrapArray(f) },
   },
-  Parameter(name, defaultArg=null): {
+  Parameter(name, defaultArg=null): NodeBase {
     __kind__: 'Parameter',
     name: name,
     defaultArg: defaultArg,
+    nameFodder(f):: self { nameFodder::: wrapArray(f) },
+    commaFodder(f):: self { commaFodder::: wrapArray(f) },
+    eqFodder(f):: self { eqFodder::: wrapArray(f) },
   },
 
-  Apply(target, positional=[], named=[]): {
+  Apply(target, positional=[], named=[]): NodeBase {
     __kind__: 'Apply',
     target: target,
     arguments: {
       positional: [if pos.__kind__ == 'CommaSeparatedExpr' then pos else $.CommaSeparatedExpr(pos) for pos in positional],
       named: named,
     },
+    leftFodder(f):: self { fodderLeft::: wrapArray(f) },
+    rightFodder(f):: self { fodderRight::: wrapArray(f) },
+    tailStrictFodder(f):: self { tailStrictFodder::: wrapArray(f) },
   },
   CommaSeparatedExpr(expr): {
     __kind__: 'CommaSeparatedExpr',
     expr: expr,
+    commaFodder(f):: self { commaFodder::: wrapArray(f) },
   },
   NamedArgument(name, arg): {
     __kind__: 'NamedArgument',
     name: name,
     arg: arg,
+    nameFodder(f):: self { nameFodder::: wrapArray(f) },
+    eqFodder(f):: self { eqFodder::: wrapArray(f) },
+    commaFodder(f):: self { commaFodder::: wrapArray(f) },
   },
 
-  Object(fields=[]): {
+  Object(fields=[]): NodeBase {
     __kind__: 'Object',
     fields: fields,
+    closeFodder(f):: self { closeFodder::: wrapArray(f) },
   },
   Field(id, expr): {
     __kind__: 'ObjectField',
@@ -106,6 +139,8 @@
     expr2: expr,
     kind: if std.type(id) == 'string' then 1 else 2,
     Hide: 1,
+    opFodder(f):: self { opFodder::: wrapArray(f) },
+    commaFodder(f):: self { commaFodder::: wrapArray(f) },
   },
   FieldLocal(id, expr): {
     __kind__: 'ObjectField',
@@ -113,6 +148,8 @@
     expr2: expr,
     kind: 4,
     Hide: 2,
+    opFodder(f):: self { opFodder::: wrapArray(f) },
+    commaFodder(f):: self { commaFodder::: wrapArray(f) },
   },
   FieldAssert(cond, message): {
     __kind__: 'ObjectField',
@@ -120,6 +157,8 @@
     expr3: message,
     kind: 0,
     Hide: 2,
+    opFodder(f):: self { opFodder::: wrapArray(f) },
+    commaFodder(f):: self { commaFodder::: wrapArray(f) },
   },
   FieldFunction(id, parameters, body): {
     __kind__: 'ObjectField',
@@ -129,19 +168,22 @@
     expr2: body,
     kind: if std.type(id) == 'string' then 1 else 2,
     Hide: 1,
+    opFodder(f):: self { opFodder::: wrapArray(f) },
+    commaFodder(f):: self { commaFodder::: wrapArray(f) },
   },
-  ApplyBrace(left, right): {
+  ApplyBrace(left, right): NodeBase {
     __kind__: 'ApplyBrace',
     left: left,
     right: right,
   },
 
-  Array(elements=[]): {
+  Array(elements=[]): NodeBase {
     __kind__: 'Array',
     elements: [if elem.__kind__ == 'CommaSeparatedExpr' then elem else $.CommaSeparatedExpr(elem) for elem in elements],
+    closeFodder(f):: self { closeFodder::: wrapArray(f) },
   },
 
-  ObjectComp(fields=[], specs=[]): {
+  ObjectComp(fields=[], specs=[]): NodeBase {
     __kind__: 'ObjectComp',
     fields: fields,
     spec: std.foldl(
@@ -156,8 +198,10 @@
       specs,
       null
     ),
+    trailingCommaFodder(f):: self { trailingCommaFodder::: wrapArray(f) },
+    closeFodder(f):: self { closeFodder::: wrapArray(f) },
   },
-  ArrayComp(body, specs=[]): {
+  ArrayComp(body, specs=[]): NodeBase {
     __kind__: 'ArrayComp',
     body: body,
     spec: std.foldl(
@@ -172,25 +216,33 @@
       specs,
       null
     ),
+    trailingCommaFodder(f):: self { trailingCommaFodder::: wrapArray(f) },
+    closeFodder(f):: self { closeFodder::: wrapArray(f) },
   },
   ForSpec(varName, expr): {
     __kind__: 'ForSpec',
     varName: varName,
     expr: expr,
+    forFodder(f):: self { forFodder::: wrapArray(f) },
+    varFodder(f):: self { varFodder::: wrapArray(f) },
+    inFodder(f):: self { inFodder::: wrapArray(f) },
   },
   IfSpec(expr): {
     __kind__: 'IfSpec',
     expr: expr,
+    ifFodder(f):: self { ifFodder::: wrapArray(f) },
   },
 
-  If(cond, branchTrue, branchFalse=null): {
+  If(cond, branchTrue, branchFalse=null): NodeBase {
     __kind__: 'Conditional',
     cond: cond,
     branchTrue: branchTrue,
     branchFalse: branchFalse,
+    thenFodder(f):: self { thenFodder::: wrapArray(f) },
+    elseFodder(f):: self { elseFodder::: wrapArray(f) },
   },
 
-  Local(binds, body): {
+  Local(binds, body): NodeBase {
     __kind__: 'Local',
     binds: if std.type(binds) == 'array' then binds else [binds],
     body: body,
@@ -200,48 +252,58 @@
     __kind__: 'LocalBind',
     variable: variable,
     body: body,
+    varFodder(f):: self { varFodder::: wrapArray(f) },
+    eqFodder(f):: self { eqFodder::: wrapArray(f) },
+    closeFodder(f):: self { closeFodder::: wrapArray(f) },
   },
   LocalFunctionBind(variable, parameters, body): {
     __kind__: 'LocalBind',
     variable: variable,
     body: body,
     fun: $.Function(parameters, body),
+    varFodder(f):: self { varFodder::: wrapArray(f) },
+    eqFodder(f):: self { eqFodder::: wrapArray(f) },
+    closeFodder(f):: self { closeFodder::: wrapArray(f) },
   },
 
-  Assert(cond, message, rest): {
+  Assert(cond, message, rest): NodeBase {
     __kind__: 'Assert',
     cond: cond,
     message: message,
     rest: rest,
+    colonFodder(f):: self { colonFodder::: wrapArray(f) },
+    semicolonFodder(f):: self { semicolonFodder::: wrapArray(f) },
   },
-  Error(expr): {
+  Error(expr): NodeBase {
     __kind__: 'Error',
     expr: expr,
   },
 
-  Parens(inner): {
+  Parens(inner): NodeBase {
     __kind__: 'Parens',
     inner: inner,
+    closeFodder(f):: self { closeFodder::: wrapArray(f) },
   },
 
-  Import(file): {
+  Import(file): NodeBase {
     __kind__: 'Import',
     file: if std.type(file) == 'string' then $.String(file) else file,
   },
-  ImportStr(file): {
+  ImportStr(file): NodeBase {
     __kind__: 'ImportStr',
     file: if std.type(file) == 'string' then $.String(file) else file,
   },
-  ImportBin(file): {
+  ImportBin(file): NodeBase {
     __kind__: 'ImportBin',
     file: if std.type(file) == 'string' then $.String(file) else file,
   },
 
-  Binary(left, op, right): {
+  Binary(left, op, right): NodeBase {
     __kind__: 'Binary',
     left: left,
     right: right,
     op: op,
+    opFodder(f):: self { opFodder::: wrapArray(f) },
   },
   Mul(left, right): self.Binary(left, 0, right),
   Div(left, right): self.Binary(left, 1, right),
@@ -263,7 +325,7 @@
   And(left, right): self.Binary(left, 17, right),
   Or(left, right): self.Binary(left, 18, right),
 
-  Unary(expr, op): {
+  Unary(expr, op): NodeBase {
     __kind__: 'Unary',
     expr: expr,
     op: op,
@@ -437,6 +499,22 @@
     trace(str, rest): $.Apply($.Member($.Var('std'), 'trace'), [str, rest]),
   },
 
+  Fodder: {
+    Blank(blanks=0): {
+      blanks: blanks,
+      indent: 0,
+      comment: [],
+      kind: 0,
+    },
+    LineEnd(blanks=0, indent=0, comment=null): {
+      blanks: blanks,
+      indent: indent,
+      comment: if comment != null then [comment] else [],
+      kind: 0,
+    },
+  },
+
+  formatJsonnet(jsonnet): std.native('invoke:jsonnet')('formatJsonnet', [jsonnet]),
   manifestJsonnet(jsonnet): std.native('invoke:jsonnet')('manifestJsonnet', [jsonnet]),
   parseJsonnet(jsonnet): std.native('invoke:jsonnet')('parseJsonnet', [jsonnet]),
 }

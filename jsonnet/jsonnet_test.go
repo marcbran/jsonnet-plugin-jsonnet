@@ -204,6 +204,10 @@ func TestParseManifest(t *testing.T) {
 			jsonnet:   "[1, // add two to array\n2]",
 			canonical: "[\n  1,  // add two to array\n  2,\n]",
 		},
+		{
+			name:    "comment/var",
+			jsonnet: "local a = 1;  // this is a\n\na",
+		},
 	}
 
 	for _, tt := range tests {
