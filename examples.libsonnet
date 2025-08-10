@@ -194,6 +194,27 @@ p.ex({}, {
         j.Object([j.FieldFunction('a', [], j.Number('1'))]),
       ),
     expected: '{ a(): 1 }',
+  }, {
+    name: 'local',
+    example:
+      j.manifestJsonnet(
+        j.Object([
+          j.FieldLocal('a', j.Number('1')),
+          j.Field('b', j.Var('a')),
+        ]),
+      ),
+    expected: '{ local a = 1, b: a }',
+  }, {
+    name: 'assert',
+    example:
+      j.manifestJsonnet(
+        j.Object([
+          j.FieldLocal('a', j.Number('1')),
+          j.FieldAssert(j.Eq(j.Var('a'), j.Number('1')), j.String('a must be 1')),
+          j.Field('b', j.Var('a')),
+        ]),
+      ),
+    expected: "{ local a = 1, assert a == 1 : 'a must be 1', b: a }",
   }]),
   ApplyBrace: p.ex([{
     name: 'apply brace',
