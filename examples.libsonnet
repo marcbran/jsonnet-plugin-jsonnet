@@ -378,6 +378,13 @@ p.ex({}, {
       ),
     expected: 'local a = 1; a',
   }, {
+    name: 'single non-array bind',
+    example:
+      j.manifestJsonnet(
+        j.Local(j.LocalBind('a', j.Number('1')), j.Var('a')),
+      ),
+    expected: 'local a = 1; a',
+  }, {
     name: 'two binds',
     example:
       j.manifestJsonnet(
@@ -417,6 +424,33 @@ p.ex({}, {
         ),
       ),
     expected: 'local a(b) = b; a(1)',
+  }]),
+  Locals: p.ex([{
+    name: 'two locals',
+    example:
+      j.manifestJsonnet(
+        j.Locals(
+          [
+            [j.LocalBind('a', j.Number('1'))],
+            [j.LocalBind('b', j.Var('a'))],
+          ],
+          j.Var('b')
+        ),
+      ),
+    expected: 'local a = 1; local b = a; b',
+  }, {
+    name: 'two non-array locals',
+    example:
+      j.manifestJsonnet(
+        j.Locals(
+          [
+            j.LocalBind('a', j.Number('1')),
+            j.LocalBind('b', j.Var('a')),
+          ],
+          j.Var('b')
+        ),
+      ),
+    expected: 'local a = 1; local b = a; b',
   }]),
   Assert: p.ex({
     example:

@@ -39,6 +39,7 @@ p.pkg({
   If: p.desc('If'),
 
   Local: p.desc('Local'),
+  Locals: p.desc('Locals'),
 
   Assert: p.desc('Assert'),
   Error: p.desc('Error'),
