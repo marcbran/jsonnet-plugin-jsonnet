@@ -183,8 +183,9 @@ func TestParseManifest(t *testing.T) {
 			jsonnet: "assert true; true",
 		},
 		{
-			name:    "assert/message",
-			jsonnet: "assert 'foo': 'bar'",
+			name:      "assert/message",
+			jsonnet:   "assert 'foo': 'bar'; true",
+			canonical: "assert 'foo' : 'bar'; true",
 		},
 		{
 			name:    "error/message",
