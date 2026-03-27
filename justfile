@@ -1,6 +1,7 @@
 
 test:
-    @jpoet test
+    @go test ./...
+    @jpoet test .
 
 build: test
     @jpoet pkg build
