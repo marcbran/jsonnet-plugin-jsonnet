@@ -5,10 +5,10 @@ import (
 	"github.com/marcbran/jpoet/pkg/jpoet"
 )
 
-func Plugin() *jpoet.Plugin {
+func Plugin(opts ...jpoet.PluginOption) *jpoet.Plugin {
 	return jpoet.NewPlugin("jsonnet", []jsonnet.NativeFunction{
 		FormatJsonnet(),
 		ManifestJsonnet(),
 		ParseJsonnet(),
-	})
+	}, opts...)
 }
