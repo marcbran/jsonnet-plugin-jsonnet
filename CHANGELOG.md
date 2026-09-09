@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/marcbran/jsonnet-plugin-jsonnet/compare/v0.3.0...v0.4.0) (2026-09-09)
+
+
+### Features
+
+* plugin with options pattern ([#54](https://github.com/marcbran/jsonnet-plugin-jsonnet/issues/54)) ([dcabae0](https://github.com/marcbran/jsonnet-plugin-jsonnet/commit/dcabae0080007af8b91e2c13ae1ca719eaac47d1))
+
 ## [0.3.0](https://github.com/marcbran/jsonnet-plugin-jsonnet/compare/v0.2.1...v0.3.0) (2026-03-27)
 
 
